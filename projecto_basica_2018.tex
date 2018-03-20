@@ -1,0 +1,731 @@
+\documentclass[12pt,letterpaper]{article} %report,article?
+\usepackage[letterpaper,lmargin=3.0cm,rmargin=3.0cm,tmargin=2.5cm,bmargin=2.5cm,headheight=12pt]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[spanish, es-tabla]{babel}
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{amsmath}
+\usepackage{tocloft}
+\usepackage{authblk}
+\usepackage{fancyhdr}
+\usepackage{soul}
+\usepackage{cite}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{multicol}
+\usepackage{etoolbox}
+\usepackage{relsize}
+\patchcmd{\thebibliography}
+  {\list}
+  {\begin{multicols}{2}\smaller\list}
+  {}
+  {}
+\appto{\endthebibliography}{\end{multicols}}
+
+\newcommand{\red}[1]{\textcolor{red}{\textbf{#1}}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\tout}[1]{\red{\textst{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+\renewcommand\cftsecleader{\cftdotfill{\cftdotsep}}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\circ$}
+\renewcommand{\labelitemiii}{$\textendash$}
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+% \fancyhead[RO,RE]{Drogabilidad Oncoproteínas EBV / DPG-HIMFG}
+\fancyhead[R]{Drogabilidad Oncoproteínas EBV / DPG-HIMFG}
+\fancyfoot[C]{\large \thepage}
+
+
+\title{Evaluación computacional del potencial de modulación por fármacos (drogabilidad) de oncoproteínas del
+  virus de Epstein-Barr para el tratamiento del cáncer. \\
+  \vspace*{0.5\baselineskip}
+  \line(1,0){250}\\
+  \small{Tipo de apoyo: Investigador Joven} \\
+  \small{Area: II. Biología y Química}\\
+  \vspace*{0.5\baselineskip}
+  \small{Responsable técnico: Diego Prada Gracia} \\
+  \small{Institución de adscripción: Hospital Infantil de México Federico Gómez}\\
+  \line(1,0){250}
+}
+\author[]{}
+% \affil{Hospital Infantil de México Federico Gómez}
+\date{}
+
+
+\begin{document}
+ 
+\maketitle
+
+\section{Resumen}
+
+El oncovirus de Epstein-Barr (EBV) es uno de los virus más extendidos entre los
+humanos. Se estima que más del 90$\%$ de los adultos en el planeta están
+infectados por EBV. Este virus tiene un ciclo de vida bifásico con una etapa
+latente y otra lítica. Durante la etapa latente el virus permanece en forma de
+plásmido, doble hélice de ADN cerrada circular, replicándose junto con la célula
+hospedera que mayoritariamente es un linfocito B. En esta fase el virus expresa
+proteínas con potencial oncogénico, inflamatorio y autoinmune; pudiendo
+desencadenar la transformación del linfocito B en célula tumoral como ocurre en
+cánceres como el linfoma de Burkitt, el linfoma de Hodgkin, el carcinoma
+nasofaríngeo o el carcinoma gástrico. Los productos expresados por el virus en
+esta fase están bien determinados, especialmente las proteínas virales. Sin
+embargo no existe a la fecha tratamiento antiviral capaz de inhibir a EBV
+latente. En la última década, tras el esclarecimiento
+del rol de algunas de las proteínas de EBV, se han comenzado a sofisticar los
+proyectos de descubrimiento de potenciales inhibidores que tradicionalmente se
+basaban en campañas de cribado masivo experimental; con la implementación del
+diseño racional asistido por computadora. Sin embargo estos acercamientos,
+reportados tras la resolución de la estructura de varias de estas proteínas, se
+han realizado únicamente mediante el diseño basado en estructura. No aparece en
+la literatura ningún estudio que, por medio de modelos físicos de sistemas
+biomoleculares integrados por computadora, evalúe la potencial inhibición
+o modulación de la función de estas proteínas mediante la interacción con una
+molécula diseñada ad hoc (drogabilidad). El presente proyecto que aquí se
+presenta pretende ser pionero en la caracterización de los mecanismos que
+determinan la drogabilidad de dichas proteínas con el propósito de
+ser capaces de guiar el diseño racional de antivirales de EBV.
+
+
+\section{Antecedentes}
+
+Diversos factores, genéticos y epigenéticos, pueden desencadenar la
+proliferación anómala de células transformando su ciclo de vida. Uno de estos
+agentes desencadenantes son los virus oncogénicos \cite{Gupta2014,Damania2015}. Estos virus,
+si bien desarrollan diferentes estrategias, tienen en común que producen
+elementos ajenos a la célula como proteínas o fragmentos de RNA con la capacidad
+de transformarla en tumoral. Alrededor del 20$\%$ de los cánceres humanos tienen
+alguno de los ADN oncovirus desempeñando un papel decisivo en su patogénesis
+\cite{Parkin2006,Dayaram2008}. Este es el caso del virus ADN oncogénico herpesvirus humano
+4, o como comúnmente se denomina honrando a sus descubridores: virus de
+Epstein-Barr (EBV).
+
+EBV es un gamma herpesvirus B linfotrópico del que somos portadores la gran
+mayoría de nosotros. Se estima que más del 90$\%$ de la población adulta mundial
+está infectada por este oncovirus \cite{Cohen2000}. Si atendemos a la población
+infantil existen diferencias geográficas debido a factores socio-económicos, demográficos y
+culturales. En países en vías de desarrollo el contagio suele producirse a edades muy
+tempranas, en la niñez, mientras que en sociedades desarrolladas dicho contagio
+se retrasa mayoritariamente a la adolescencia \cite{Dowd2013}.
+
+El mecanismo de infección y alojamiento en el hospedero adoptado por EBV tiene
+particularidades que lo hacen especialmente exitoso y que explican que sea uno
+de los virus más frecuentemente encontrado en humanos
+\cite{Lieberman2014,Gupta2014,Damania2015,Klein2015,Minarovits2017}. Este
+oncovirus se transmite entre individuos a través de la saliva, siendo las
+células epiteliales del tubo digestivo superior la puerta de entrada más
+frecuente. Una vez en el hospedero, EBV infecta preferentemente a linfocitos B
+en los que puede ``residir'' replicándose con ellos durante toda la vida del
+individuo infectado sin manifestar ni desencadenar ninguna patología, de manera
+asintomática. El ADN viral se conserva como episoma expresando una cantidad
+mínima de productos cuya función principal es desarrollar los mecanismos que
+aseguran su conservación, transcripción y replicación. Replicación que se
+produce una vez por ciclo celular mediante el acoplamiento físico del episoma al
+cromosoma de la célula hospedera en su metafase. Esta etapa del ciclo de
+infección del virus es conocida como ``fase de latencia'' y en ella se pueden
+distinguir a su vez varias subfases (0, I, II y III) caracterizadas por la
+presencia de algunas de las proteínas virales. Tras el contagio el virus adopta
+la fase de latencia III en la que se expresan los antígenos nucleares EBNA (del
+inglés Epstein-Barr Nuclear Antigen): EBNA1, EBNA2, EBNA3A, EBNA3B, EBNA3C y
+EBNA-LP; además de las proteínas de membrana LMP1, LMP2a y LMP2b, y varios
+miRNAs \cite{Kang2015b}. En la latencia II, I y 0 únicamente algunas de estas
+proteínas se expresan, siendo EBNA1 la única presente en todas las fases. Es por
+este motivo que EBNA1 ha atraído la atención de todo el que pretende desentrañar
+el mecanismo molecular que posibilita que EBV permanezca tanto tiempo de manera
+silente en el hospedero sin levantar ninguna alarma antigénica
+\cite{Israel2003,Jiang2017,Lima2013a,Daskalogianni2015,Noh2016b,Gianti2016,Kosowicz2017}.
+La importancia clínica de este ciclo latente reside en que los productos
+expresados por los genes de EBV tienen capacidades oncogénicas, inflamatorias y
+autoinmunes pudiendo transformar la célula hospedera infectada en tumoral
+\cite{Humme2003,Klein2015}. Desafortunadamente en la actualidad no existen
+fármacos con potencial inhibidor antiviral para EBV latente \cite{Kempkes2015}.
+
+Tras la fase latente, y sin que haya sido esclarecido todavía el mecanismo que
+desencadena esta transición, el virus entra en fase lítica. En esta nueva fase,
+a diferencia de la anterior, EBV produce viriones con la participación de ADN
+polimerasa del hospedero con el objeto de infectar otras células o ser
+transmitidos por saliva para la infección de nuevos individuos. El mecanismo
+desarrollado por el virus en esta fase es completamente distinto al anterior
+implicando la expresión de nuevos productos. Las primeras proteínas expresadas,
+y a las que se les adjudica un papel decisivo en el paso latente-lítico por su
+participación en la expresión de posteriores productos, son las denominadas
+BZLF1 y BRLF1. Posteriormente se expresan otras 42 proteínas
+  líticas \cite{Traylen2015}. Para esta fase sí contamos con antivirales
+capaces de atacar al virus con cierta eficacia. Es por este motivo que una de
+las estrategias mas exploradas para tratar la infección de EBV es la inducción
+de su fase lítica \cite{Lima2013a}.
+
+Se estima que EBV se encuentra asociado al origen del 2$\%$ de los cánceres
+humanos \cite{Parkin2006,Cohen2011,ZurHausen2015}. Este oncovirus se encuentra
+en el origen a varios tipos de linfomas de linfocitos B y T como los linfomas de
+Burkitt o Hodgkin, así como los carcinomas nasofaríngeo y de estómago, y
+sarcomas de músculo liso. También se encuentra asociado a enfermedades
+autoinmunes e inflamatorias como mononucleosis infecciosa, síndrome crónico de
+EBV y síndrome histiocítico, esclerosis múltiple o lupus eritematoso sistémico
+entre otras \cite{Parkin2006,Cohen2011,Young2016,Draborg2013,Niller2008}. Todo
+esto convierte al virus EBV en una de las principales infecciones a controlar en
+pacientes inmunodeprimidos evidenciando también la importancia clínica de
+encontrar moléculas inhibidoras de sus oncoproteínas preferencialmente en su
+fase latente.
+
+Desde antes de resolver la estructura cristalizada, sola o en su interacción con
+ADN \cite{Bochkarev1995,Bochkarev1996c}, la proteína EBNA1 ha sido la principal
+diana del diseño de fármacos \cite{Orlowski1990,Henderson1982}. Además de ser la
+única proteína expresada en cualquier punto del ciclo de vida bifásico del
+virus, la polivalencia de sus mecanismos moleculares la convierte en la piedra
+angular sobre la que descansa la supervivencia de EBV en latencia: realiza
+funciones de persistencia, replicación y transcripción del genoma. Para realizar
+estas funciones EBNA1 reparte sus 641 aminoácidos en distintos dominios con
+distinto rol. Así por ejemplo, este antígeno nuclear es capaz de unirse en
+distintos puntos al episoma vírico en forma de homodímero mediante su dominio de
+interacción a ADN, bien para contribuir en su interacción con la maquinaria
+proteica del hospedero a su transcripción, bien para hacer de enlace físico
+entre el episoma y el material cromosómico de la célula \cite{Bochkarev1996c}.
+Otro dominio cuyo rol es reseñable es el dominio de repetición de pares de
+aminoácidos arginina-alanina. Este dominio ha demostrado ser uno de los
+responsables de que la célula infectada en fase latente pase desapercibida
+frente a linfocitos T citotóxicos CD8 \cite{Lee2004}. Además, interacciona con
+proteosomas e inhibe la proteólisis de dicha proteína \cite{Dantuma2000}.
+
+Tras EBNA1, otra proteína que destaca por acumular numerosos ensayos para
+determinar la naturaleza de sus funciones es BZLF1. La proteína BZLF1, cuya
+estructura fue resuelta en su interacción con ADN en 2006 \cite{Petosa2006}, es
+un regulador transcripcional que aparece como el primer producto que EBV expresa
+en su fase lítica. Este hecho la relaciona de manera reconocida en la
+literatura como el posible agente interruptor que
+desencadena el resto de acontecimientos de la fase lítica
+\cite{Petosa2006,Daskalogianni2015,Hartlage2015,Lima2013a}.
+\\
+
+En las últimas décadas se han llevado acabo campañas de cribado masivo de
+moléculas, inicialmente experimentales, en la búsqueda de un antiviral efectivo
+especialmente para la fase latente
+\cite{Henderson1982,Orlowski1990,Li2010a,Li2010b,Lima2013a}. Aparece en la
+literatura reciente un no despreciable número de moléculas encontradas \emph{de
+  novo} al que se unen aquellos compuestos como antivirales de alto espectro
+cuyo efecto ha sido probado en EBV
+\cite{Gershburg2005,Li2010a,Clercq2002,Hornig2014}. Casi todas estas moléculas
+se reportan con problemas de biodisponibilidad, toxicidad o ineficiencia. Sobre
+muchas de ellas se desconoce su molécula blanco y por lo tanto las
+características del sitio de unión como para poder emprender proyectos de
+optimización. El resultado de esta situación es que actualmente no contamos con
+moléculas capaces de actuar como antivirales en la fase latente, y los intentos
+experimentales de descubrimiento de moléculas inhibidoras no han contribuido a
+acumular conocimiento sobre los mecanismos de drogabilidad de las proteínas de
+EBV \cite{Gianti2016}. En cuanto a los intentos de diseño racional computacional
+que aparecen en la literatura, estos están todavía en fase incipiente y no
+abundan. La mayoría de estos intentos reportados hacen uso del diseño basado en
+estructura partiendo directamente de la caracterización obtenida del cristal:
+obviando las modificaciones de su estructura en un proceso de relajación o
+ignorando cualquier cambio conformacional que pueda estar en el origen del
+mecanismo a escala atómica de su función
+\cite{Li2010a,Li2010b,Hornig2014,Gianti2016,Young2016,Messick2017,Jiang2017}.
+Solamente un estudio aparece apoyado en la simulación de dinámica molecular para
+el diseño de un inhibidor de EBNA1. Se trata de un experimento de simulación
+``fuerza bruta'' durante un tiempo de 200 ns \cite{Jiang2017}, a todas luces
+insuficiente para determinar la estabilidad de la unión y la naturaleza de las
+interacciones atómicas que más contribuyen entálpica y entrópicamente a la
+energía libre de unión. Otro elemento característico y común a los intentos de
+diseño racional de inhibidores sobre las proteínas de EBV es el abordaje del
+filtrado de quimiotecas únicamente mediante su interacción o docking de proteína
+\cite{Ferreira2015,Lavecchia2013}. Estos métodos, lejos de evaluar la física de
+todos los grados de libertad del sistema obteniendo magnitudes físicas relativas
+a la interacción, se apoyan en argumentos heurísticos para la rápida puntuación
+de la idoneidad de la interacción. En algunos casos, esta puntuación está basada
+en la evaluación de una energía potencial de interacción de un modelo de
+biomoléculas reducido, introduciendo algunas interacciones electrostáticas de
+cargas puntuales, interacción estérica o parametrización sencilla de puentes de
+hidrógeno, por ejemplo. Sin embargo, estas aproximaciones nunca consideran
+ninguna contribución entrópica y por lo tanto no estiman las energías libres de
+unión de las distintas moléculas candidato, que son las que determinan
+cuantitativamente las probabilidades de estancia de un sistema físico en un
+determinado estado (en este caso ``acoplados'')
+\red{\cite{Shirts2010a,Mortier2015}}. Tampoco de esta manera se pueden validar
+sus predicciones dado que no hay magnitudes físico-químicas termodinámicas
+-relativas o absolutas- y/o cinéticas de sus modelos que poder comparar con
+experimentos in vitro \cite{Chaires2008}.
+
+Existe una ausencia importante de estudios teórico computacionales que aborden,
+termodinámica y cinéticamente, el conjunto de interacciones y cambios
+estructurales a escala atómica que permitan determinar el potencial que tienen
+ciertas proteínas de EBV, potenciales blancos para su inhibición como EBNA1 o
+BZLF1, para ver alguna de sus funciones interrumpida o modulada mediante la
+interacción con moléculas diseñadas ad-hoc (drogabilidad \cite{Barril2013}).
+
+
+\section{Planteamiento del problema}
+
+El oncovirus EBV se encuentra en el origen del mecanismo que desencadena
+diversos tipos de cáncer como el linfoma de Hodgkin o el linfoma de Burkitt, así
+como carcinomas nasofaríngeos o diversas enfermedades autoinmunes
+\cite{Parkin2006,Cohen2011,Young2016,Draborg2013,Niller2008,ZurHausen2015}.
+EBV tiene la capacidad de infectar linfocitos B y en su fase latente hospedarse
+en la célula de manera asintomática sin más trascendencia hasta la muerte del
+hospedero. Pero su carga viral, dependiendo del estadio
+de la fase latente, puede presentar actividad autoinmune, inflamatoria y
+oncogénica. El virus tiene la capacidad de transformar la célula infectada
+tornándola inmortal
+  \cite{Lieberman2014,Gupta2014,Damania2015,Klein2015,Minarovits2017}.
+
+Las proteínas que EBV expresa en los distintos estadios de su ciclo de vida
+bifásico (latente-lítico) están bien caracterizadas. Algunas de ellas, como es
+el caso del antígeno nuclear de Epstein-Barr 1 (EBNA1) o la proteína BZLF1,
+cuentan con la estructura resuelta de sus dominios de interacción con y sin
+  ADN en ambos casos por difracción de rayos X 
+  \red{\cite{Bochkarev1995,Bochkarev1996c,Petosa2006}}. \tout{Esta
+  informaci\'on} Esto es
+esencial para poder determinar, haciendo uso de modelos físicos computacionales,
+los mecanismos a escala atómica que describen cómo estas proteínas llevan a cabo
+su función mediante cambios conformacionales e interacciones con otras
+biomoléculas. Esta información, no s\red{o}lamente estructural sino también
+dinámica, permite revelar sitios de la proteína que convenientemente alterados
+en sus propiedades físicas pueden modular su comportamiento
+\cite{Shirts2010a,Mortier2015}. Este efecto puede producirse por la
+interacción de dicha proteína con una molécula o péptido diseñados \emph{ad hoc}
+con las propiedades adecuadas para inhibir su función, desestabilizar su
+estructura, evitar la formación de una interfase, bloquear el sitio activo en el
+caso de una enzima, u ocupar el sitio de unión en un receptor para desencadenar
+un efecto agonista u antagonista modulado en ocasiones de manera alostérica. A
+esta potencial modulación de la actividad de una proteína mediante moléculas
+diseñadas para tal efecto se le conoce en el argot como ``drogabilidad'' \red{\cite{Barril2013}}. Y su
+evaluación es el paso previo indispensable para iniciar un proyecto de diseño
+y/u optimización de fármacos.
+
+Este proyecto pretende centrarse en la evaluación de la drogabilidad de
+proteínas del virus EBV con objeto de determinar regiones específicas en la
+estructura de los blancos moleculares sobre las que comprobar la factibilidad del
+diseño para su inhibición. De manera más concreta, y como hipótesis inicial, se
+trabajará en la búsqueda de mecanismos de inhibición de EBNA1 y BZLF1 dejando
+abierta la posibilidad de determinar la drogabilidad de cualquier otra proteína
+con posible papel oncogénico.
+
+
+\section{Justificación}
+
+Se estima que el 2$\%$ de todos lo cánceres se deben a la infección por el
+herpesvirus de Epstein-Barr (EBV)
+\red{\cite{Parkin2006,Cohen2011,ZurHausen2015}}. Esta reportado que anualmente
+aparecen 200.000 casos de cáncer (Linfoma de Burkitt, Linfoma de Hodgkin,
+carcinoma nasofaríngeo, carcinoma gástrico) con evidencias de su asociación con
+EBV \cite{Cohen2011}. Pero las dimensiones de la relevancia clínica de este
+oncovirus son mayores si se tiene en cuenta que origina anualmente 125.000
+nuevos casos de mononucleosis infecciosa sólo en Estados Unidos, o que aparecen
+en el mundo aproximadamente un millón de nuevos casos de carcinoma gástrico cada
+año \cite{Kempkes2015}. \tout{Espec\'ificamente, en el Hospital Infantil de
+  M\'exico Federico G\'omez -instituci\'on vinculada al presente proyecto- la
+  Unidad de Virolog\'ia y C\'ancer liderada por el Dr. Ezequiel Fuentes Panan\'a
+  -colaborador del presente proyecto- tiene consolidada una linea de
+  investigaci\'on sobre papel de dicho virus los linfomas pedi\'atricos
+  atendidos en este hospital tiene contabilizado que el 70$\%$ de los linfomas
+  pediatricos que se atienden en el hospital son causados por este virus.}
+Muchas \tout{de las patolog\'ias desencadenadas por EBV, como el caso de dichos
+  linfomas pedi\'atricos,} \red{de estas patologías} se originan con el virus en
+su fase de latencia\tout{. Y} y no existen a día de hoy tratamiento antiviral o
+fármaco inhibidor de EBV en dicha fase \red{\cite{Kempkes2015,Lima2013a,Young2016}}.
+Por contra, sí existe tratamiento para la fase lítica donde el virus requiere de
+la participación de la ADN polimerasa del hospedero \red{o de su cinasas
+  \cite{Hornig2014}}. Pero dicho tratamiento sólo se puede aplicar cuando la
+infección se encuentra en pleno apogeo, lo cual es inconveniente cuando tratamos
+por ejemplo con pacientes inmunodeprimidos.
+
+Adicionalmente es pertinente \tout{rese\~nar} \red{señalar} que es\red{te}
+proyecto de investigación es necesario y oportuno dado que no se encuentra en la
+literatura iniciativas de diseño racional de nuevas moléculas \red{potenciales
+  inhibidoras de EBV} basadas en el
+estudio computacional de la termodinámica y cinética de los procesos de
+interacción entre biomoléculas y sus cambios conformacionales. \tout{La
+  relevancia de este hecho se puede explicar de manera sencilla con el siguiente
+  ejemplo. La prote\'ina EBNA1 es un blanco molecular muy atractivo cuando se
+  trata de intentar inhibir a EBV en su fase latente, y la estructura de esta
+  prote\'ina ha sido resuelta hace m\'as de 10 a\~nos. Sin embargo, el dise\~no
+  racional reportado hasta ahora se ha limitado a considerar \'unicamente la
+  estructura r\'igida cristalizada para la que se reporta, ya desde el
+  art\'iculo original, que en el complejo prote\'ina-ADN se advierten posibles
+  interacciones estabilizantes todav\'ia no formadas. Como si el complejo
+  hubiera encontrado una estructura estable para cristalizar previa a su
+  completa estabilizaci\'on en su uni\'on. Sin embargo, no aparecen trabajos en
+  los que se haya tratado de predecir cuales son las conformaciones mas estables
+  ni c\'omo es el proceso de acercamiento y uni\'on para determinar qu\'e
+  interacciones juegan un papel m\'as relevante, y en qu\'e momento, para
+  determinar m\'as acertadamente su posible drogabilidad.} \red{Este hecho
+  justifica el importante componente que esta propuesta tiene de explorativa}.
+\red{Dada la ausencia casi completa de estudios sistemáticos sobre la dinámica de estas
+proteínas este proyecto debe tener como una de sus principales vocaciones la
+acotación y distinción de qué blancos y en qué puntos son susceptibles ser
+drogados \red{\cite{Gianti2016}}. Esto servirá para enfocar más acertadamente posteriores proyectos de
+diseño y optimización racional de moléculas con potencial farmacológico como
+antivirales para EBV, además de darnos la oportunidad de ubicar nuestro trabajo
+y resultados como referencia en dicho campo.}
+
+\tout{
+Este hecho nos da la oportunidad de aprovechar el presente
+proyecto , adem\'as de para iniciar una prometedora linea de investigaci\'on en la
+nueva Unidad de Investigaci\'on en Biolog\'ia Computacional y Dise\~no de F\'armacos del
+Hospital Infantil de M\'exico, para ubicar nuestro trabajo y resultados como
+referencia en el campo del dise\~no de antivirales de EBV.}
+
+\tout{
+Por \'ultimo se hace necesario justificar el componente importante que este
+proyecto tiene de explorativo. Dado el vac\'io que hay en estudios sistem\'aticos
+sobre la din\'amica de estas prote\'inas, sus cambios conformacionales o sus
+propiedades termodin\'amicas y cin\'eticas, este proyecto debe tener como una de sus
+principales vocaciones la acotaci\'on y distinci\'on de qu\'e blancos y en qu\'e puntos
+son susceptibles ser drogados. Esto servir\'a para enfocar m\'as acertadamente
+posteriores proyectos de dise\~no y optimizaci\'on racional de mol\'eculas con
+potencial farmacol\'ogico como antivirales para EBV.
+}
+
+\red{  
+\section{Hipótesis}
+}
+
+El conjunto de oncoproteínas expresadas en las fases de latencia de EBV, como
+EBNA1, o aquellas necesarias para su tránsito de la fase latente a la forma
+lítica, como BZLF1, pueden constituir unos blancos moleculares idóneos para el
+diseño de inhibidores con potencial farmacológico sobre aquellos tipos de cáncer
+inducidos por EBV. Los modelos físicos de biomoléculas y su simulación pueden
+aportar las claves termodinámicas y cinéticas necesarias para evaluar
+eficientemente su potencial drogabilidad y avanzar en el diseño de antivirales
+para EBV.
+\\
+\section{Objetivos}
+
+El objetivo general de este proyecto está descrito con claridad desde su
+hipótesis principal.
+
+\subsection{Objetivo general}
+
+Evaluar el potencial de modulación que mediante \red{la} interacción con pequeños
+ligandos o péptidos puede presentar la función de proteínas constitutivas del
+virus EVB como EBNA1 o BZFL1.
+
+
+\subsection{Objetivos particulares}
+
+\begin{itemize}
+
+\item Detectar y evaluar nuevos sitios drogables \tout{principalmente} sobre proteínas cuya inhibición
+  puede jugar un papel decisivo en el diseño de antivirales para EBV.
+
+\item Validar hipótesis de mecanismos de acción a escala atómica de proteínas
+  relevantes cuya función es decisiva para EBV tanto en la fase latente como
+  lítica. \tout{Ejemplo: describir el proceso de uni\'on de EBNA1 al episoma de EBV
+  calculando la diferencia de energ\'ia libre entre EBNA1 en solvataci\'on y EBNA1
+  en su interacci\'on con DNA; ratificar o rechazar las hip\'otesis que aparecen en
+  la literatura sobre el papel del homod\'imero, los mecanismos de selectividad
+  sobre segmentos de pares de bases espec\'ificos y el efecto colectivo de uni\'on
+  en sitios pr\'oximos como los presentados en la regi\'on denominada ``Dyad
+  Simmetry''.}
+
+\item Recopilar de la literatura \red{la} quimioteca de moléculas cuya posible
+  actividad antiviral sobre EBV ya ha\red{ya} sido reportada aun sin conocer su
+  posible mecanismo de acción. \tout{Construir el m\'inimo conjunto de
+    farmac\'oforos que represente dicha quimioteca para comprobar su posible
+    encaje sobre los sitios drogables detectados.} \red{Identificar además, mediante el
+    mínimo conjunto de farmacóforos que la representen, el posible encaje de
+    estos ligandos sobre los sitios drogables detectados.}
+  
+\item Diseñar, sin atender a criterios de reglas de Lipinski como la apropiada
+  solubilidad, biodisponibilidad o la alta selectividad o baja toxicidad, un
+  conjunto de moléculas o péptidos \red{cuya teórica} alta afinidad por los nuevos sitios
+  drogables detectados \red{pueda en el futuro servir como base para el posible
+    diseño de un inhibidor.} \tout{
+  a lo largo del proyecto cuya constante de disociaci\'on, entropia y
+  energ\'ia libre de uni\'on calculados en los modelos f\'isicos puedan ser en el
+  futuro corroborados y validados mediante el uso de la microcalorimetr\'ia
+  de titulaci\'on isoterma en una posible extensi\'on de este proyecto.}
+
+\item \tout{Dise\~nar, sin atender a criterios de reglas de Lipinski como la apropiada
+  solubilidad, biodisponibilidad o la alta selectividad o baja toxicidad, un
+  conjunto de mol\'eculas o p\'eptidos con alta afinidad por los nuevos sitios
+  drogables detectados a lo largo del proyecto cuyo efecto inhibitorio pueda ser
+  comprobado y caracterizado de manera experimental mediante el uso de la
+  microcalorimetr\'ia de titulaci\'on isoterma en una posible extensi\'on de este proyecto.}
+
+\item \tout{Consolidar el arranque de una importante linea de investigaci\'on definiendo
+  sobre criterios s\'olidos el comienzo del camino hacia el dise\~no y optimizaci\'on
+  de antivirales de EBV para el tratamiento de los distintos tipos de cancer
+  asociados a este virus.}
+  
+\item \tout{Dise\~nar mediante la evaluaci\'on de la posible drogabilidad de prote\'inas de
+  EBV experimentos, como por ejemplo la inhibici\'on de interacciones con
+  prote\'inas del hospedero, que arrojen evidencias sobre los mecanismos
+  oncog\'enicos, inflamatorios o autoinmunes que la infecci\'on puede desencadenar.}
+
+\end{itemize}
+
+  
+
+
+\section{Metodología}
+
+Tres herramientas computacionales se emplearán adecuadamente según la naturaleza
+y función de la proteína blanco para la evaluación de nuevos sitios drogables:
+el docking sobre proteína rígida de librerías de compuestos para el cribado
+virtual masivo inicial (High Throughput Screening)
+\red{\cite{Ferreira2015,Lavecchia2013}}, la simulación de dinámica molecular a
+todos los átomos con solvente expl\red{í}cito o impl\red{í}cito (según convenga)
+\red{\cite{Mortier2015}} y los métodos de evaluación de energía libre,
+determinación del paisaje conformacional de energía libre y métodos de
+perturbación de energía libre \red{\cite{Shirts2010a}}. Estos abordajes serán
+aplicados sobre distintas proteínas constitutivas de EBV teniendo como
+principales candidatas el antígeno nuclear 1, EBNA1, única proteína presente en
+todas las fases de latencia del virus, y BZLF1, regulador transcripcional
+decisivo en el paso de la forma latente a lítica. Por ejemplo, en el caso de
+proteínas cuya drogabilidad no ha sido previamente explorada, como BZLF1, se
+comenzará aplicando abordajes clásicos heurísticos de filtrado de quimiotecas
+mediante docking sobre proteína rígida para revelar posibles sitios de unión
+\red{\cite{Ferreira2015}}; a la vez que paralelamente se lleva a cabo una búsqueda
+racional de regiones de interfase con aquellas moléculas con las que
+interaccionen en su actividad, como p53 o ADN en este caso, susceptibles de ser
+empleadas como posibles sitios drogables \red{\cite{Barril2013}}. Por contra, en el caso de una proteína
+como EBNA1 cuya interacción en su unión con ADN ha sido recientemente empleada
+sin éxito para el diseño de inhibidores, se llevarán acabo estudios de dinámica
+molecular para por primera vez caracterizar los cambios conformacionales en el
+proceso de unión y las interacciones inter-atómicas más relevantes \red{\cite{Mortier2015}}, así como
+estudios de perturbación de energía libre cuya aplicación por definición resulta
+más precisa, aunque más costosa computacional\tout{e}mente, para la predicción
+de constantes de afinidad molécula blanco-ligando \red{\cite{Shirts2010a,Perez2016}}.
+
+Se hace necesario puntualizar que aunque estas metodologías emplean el uso
+masivo de computadoras para la simulación de la física del sistema biomolecular,
+estas no han de ser confundidas con las metodologías propias del campo de la
+bioinformática. \tout{Es cierto que} Ambas disciplinas comparten el uso de
+herramientas estadísticas para el análisis de datos como el análisis bayesiano
+\red{\cite{Perez2015,Kasson2009}}, los modelos de Markov
+\red{\cite{Chodera2014}}, el análisis multivariante \red{\cite{Doer2017}} o
+la potente batería de herramientas propias de la física de sistemas complejos
+como el uso de teoría de redes complejas o teoría de la información
+\red{\cite{Prada-Gracia2009a}}. La metodología a usar aquí está fundamentada en
+las leyes \red{de la} física que \tout{dominan la realidad del} \red{describen y
+  predicen el comportamiento de las interacciones de biomoléculas a escala de
+  energía del orden de $~K_BT$, tiempos del orden de 10$^{-12}$ segundos y
+  distancias en el rango de 10$^{-10}$ metros, posibilitando} su simulación.
+Dicha simulación \tout{, o integraci\'on,} se hace mediante el uso de
+computadoras debido a la \tout{alta dimensionalidad del sistema:} alta complejidad de
+las ecuaciones a resolver. \tout{Pero dichas ecuaciones pertenecen a modelos
+  f\'isicos fundamentados para representar y predecir fen\'omenos naturales a
+  escala de energ\'ia del orden de $/K_BT$, tiempos del orden de femtosegundos y
+  distancias en el rango de 10$^{-10}$ metros.} Esta f\'isica está bien
+consolidada\tout{, en especial la que a procesos cl'asicos en equilibrio se refiere,}
+desde los trabajos de Newton, Einstein (descripción browniana), Fokker y Planck
+o Boltzman,\tout{ etc...}, \red{en especial la que a procesos cláxicos en
+  equilibrio se refiere.} Así por ejemplo los modelos que se emplearán de biomoléculas en
+este proyecto cumplen con la descripción de procesos estocásticos, la física
+atómica, la física cuántica, la ley de fluctuación-disipación, la termodinámica
+clásica y la mecánica estadística, entre otros. \tout{Es posible que} Debido a
+la dimensión de los sistemas a estudiar, \red{cuando} las magnitudes de
+equilibrio termodinámico no puedan ser muestreadas convergentemente mediante las
+técnicas de simulación habituales \tout{. Para determinar de manera econ\'omica
+  las propiedades de altas barreras de energ\'ia libre} se hará uso de técnicas
+de simulación de procesos de no equilibrio para inferir información de
+equilibrio (desigualdad de Jarzinsky y teorema de Crooks) \red{\cite{Sandberg2015}}, así como de
+estrategias de reescalado del sistema como la simulación con campos de fuerza
+coarse-grained \red{\cite{Perilla2015}}.
+
+Las herramientas de bioinformática (minería de datos) y química computacional
+serán usadas también para dar soporte al proyecto en aspectos como \tout{. Por
+  ejemplo, en }la búsqueda de interacciones proteína-proteína posiblemente
+descritas ya en la literatura \red{\cite{Lehne2009}}.
+ 
+
+\section{Plan de análisis de los datos}
+
+Dado que se trata de un proyecto teórico el plan de análisis de datos, que no se
+puede anticipar en su totalidad, está descrito impl\red{í}citamente en la
+metodología. En el caso de las simulaciones de dinámica molecular se llevarán
+acabo análisis basados en redes cinéticas \red{\cite{Prada-Gracia2009a}} y
+modelos de estados de markov \red{\cite{Chodera2014}}. En las experiencias de
+docking \red{\cite{Ferreira2015}} o perturbación de energía libre
+\red{\cite{Shirts2010a}} se emplearán técnicas de clustering para la estimación
+de la contribución entrópica además del cálculo entálpico \red{\cite{Du2016}}.
+Además, se hará uso de la batería de herramientas de análisis mencionadas en la
+sección anterior como el análisis bayesiano \red{\cite{Kasson2009}}, el análisis
+multivariante \red{\cite{Doer2017}} o las redes complejas
+\red{\cite{Prada-Gracia2009a}}. Adicionalmente, como en todo proyecto
+físico-teórico cabe la posibilidad de diseñar, según el rumbo del proyecto,
+análisis con fundamento físico y estadístico adecuados para responder a las
+distintas preguntas puntuales que surjan en el transcurso \red{del proyecto}
+\tout{de la investigaci\'on}.
+
+\section{Limitaciones del estudio}
+
+La principal limitación con la que cuenta el proyecto se debe a los
+insuficientes recursos computacionales con los que se cuenta en la actualidad en
+la Unidad de Biología Computacional y Diseño de Fármacos del Hospital Infantil
+de México. La simulación de un sistema que incluye un segmento de ADN además de
+una proteína de más de 600 aminoácidos, como EBNA1, debidamente solvatados en
+presencia de cationes y aniones requiere de un poder computacional mayor al del
+cluster de cinco nodos \red{del que dispone nuestra unidad}. Lo mismo sucede con
+el cribado \tout{HTS} de una gran quimioteca considerando la proteína rígida, o
+el cribado \tout{MTS} de pocos ligandos mediante evaluación de energía libre de
+unión. Se requiere de la participación de un volumen mayor de recursos
+computacionales. Además, la dotación económica que supuestamente se destina para
+soportar el desarrollo de este proyecto de investigación no puede ser destinada
+a la compra del equipo de laboratorio computacional necesario \tout{sin duda}
+para \tout{trabajar} este tipo de proyectos de investigación.
+
+Para superar esta limitación se buscará la manera de acceder a tiempo de
+computación en alguno de los tres nodos de supercomputación del Laboratorio
+Nacional de Computo de Alto Desempeño, LANCAD, de México.
+
+En caso de no disponer del poder computacional adecuado se comprobará la validez
+de ciertas aproximaciones al modelo físico de sistema biomolecular con el fin de
+reducir su complejidad a costa de perder detalle fino en la descripción y poder
+ser utilizadas con el propósito de alcanzar los objetivos descritos en esta
+propuesta. Estas técnicas pueden ser el uso de solvente impl\red{í}cito
+\red{\cite{Kleinjung2014}},\tout{ el uso de estrategias de escalado
+  dimensional,} m\red{é}todos de integración de dinámica estocástica
+\emph{biased} sobre el espacio reducido de grados de libertad mas lentos
+\red{\cite{Wu2016}}, el diseño de experimentos computacionales de no equilibrio
+\red{\cite{Sandberg2015}} o el uso de campos de fuerza coarse-grained
+\red{\cite{Perilla2015}}.
+
+\section{Consideraciones éticas}
+
+Dentro de las distintas categorías de riesgo según los agentes, organismos o
+población manejada en el estudio podemos catalogar el presente proyecto de
+investigación de ``Sin Riesgo''. El proyecto es puramente teórico. No se
+realizarán en ningún momento experimentos físicos -que no sean computacionales-,
+químicos o biológicos. Tampoco el objeto de estudio es un segmento de población
+humana. No procede por tanto para este proyecto hacer ninguna consideración
+ética relevante o incluir carta de confidencialidad, compromiso de
+confidencialidad de datos personales o protocolo de actuación frente a efectos
+adversos. \emph{Ver Formatos Adjuntos.}
+
+\section{Consideraciones de bioseguridad}
+
+Al igual que en la sección anterior. Se puntualiza de nuevo que este proyecto de
+investigación es puramente teórico. No se realizarán en ningún momento
+experimentos físicos -que no sean computacionales-, químicos o biológicos. No se
+manejarán muestras biológicas, agentes patógenos, material radiactivo o
+productos tóxicos. No es pertinente entonces incluir ninguna consideración
+específica relativa a bioseguridad.
+\emph{Ver Formatos Adjuntos.}
+
+\section{Anexos}
+
+Se adjuntan al final de la propuesta y como anexos fuera de índice los
+siguientes documentos: ``Solicitud de evaluación de proyecto'', ``Formato del
+comité de ética en investigación'', ``Formato del comité de bioseguridad'',
+``Formato PE-04'', ``Formato de distribución de asignación anual'' y
+``Justificación de distribución de asignación anual''.
+
+\section{Cronograma}
+
+El desarrollo del proyecto de investigación aquí propuesto se llevará acabo en
+el transcurso de 8 trimestres de la siguiente manera:
+
+\begin{itemize}
+\item \emph{RevLit}: Revisión de literatura, recolección de ligandos reportados
+  con potencial antiviral y ejercicio de discusión, diseño y evaluación de las
+  estrategias a adoptar.
+	\item \emph{RepRev}: Escritura de artículo de revisión enfocado hacia el diseño
+    racional asistido por computadora de inhibidores de EBV.
+	\item \emph{EvalProts}: Evaluación de idoneidad de proteínas expresadas por
+    EBV distintas a EBNA1 y BZLF1 para la evaluación de su drogabilidad.
+	\item \emph{SimuEBNA1}: Experimentos computacionales de EBNA1. 
+	\item \emph{AnalEBNA1}: Análisis de experimentos computacionales de EBNA1.
+	\item \emph{SimuBZLF1}: Experimentos computacionales de BZLF1.
+	\item \emph{AnalBZLF1}: Análisis de experimentos computacionales de BZLF1. 
+	\item \emph{SimuOtras}: Simulación de posibles proteínas alternativas
+    seleccionadas en la etapa \emph{EvalProts}.
+	\item \emph{AnalOtras}: Análisis de experimentos computacionales de \emph{SimuOtras}.
+	\item \emph{EvalLigsLit}: Evaluación sobre las proteínas abordadas y sus
+    sitios drogables de la colección de ligandos obtenida en la etapa \emph{RevLit}.
+	\item \emph{RepRes1}: Escritura de comunicación de lo aprendido con EBNA1.
+	\item \emph{RepRes2}: Escritura de comunicación de lo aprendido con BZLF1.
+	\item \emph{RepRes3}: Escritura de comunicación de lo aprendido con las
+    posibles proteínas seleccionadas en la etapa \emph{EvalProts}.
+  \end{itemize}
+  
+\definecolor{midgray}{gray}{.5}
+\begin{table}[!htbp]
+	\centering
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+      \hline
+      &\multicolumn{4}{c|}{Año 1}&\multicolumn{4}{c|}{Año 2}\\
+      \hline
+		&1&2&3&4&5&6&7&8\\
+		\hline
+		\emph{RevLit}&\cellcolor{midgray}&&&&&&&\\
+		\hline
+		\emph{RepRev}&&\cellcolor{midgray}&&&&&&\\
+		\hline	
+		\emph{EvalProts}&&\cellcolor{midgray}&&&&&&\\
+		\hline			
+		\emph{SimuEBNA1}&&&\cellcolor{midgray}&\cellcolor{midgray}&&&&\\
+		\hline	
+		\emph{AnalEBNA1}&&&&\cellcolor{midgray}&\cellcolor{midgray}&&&\\
+		\hline
+		\emph{SimuBZLF1}&&&&\cellcolor{midgray}&\cellcolor{midgray}&&&\\
+		\hline	
+		\emph{AnalBZLF1}&&&&&\cellcolor{midgray}&\cellcolor{midgray}&&\\
+		\hline	
+		\emph{SimuOtras}&&&&&\cellcolor{midgray}&\cellcolor{midgray}&&\\
+		\hline	
+		\emph{AnalOtras}&&&&&&\cellcolor{midgray}&\cellcolor{midgray}&\\
+		\hline	
+		\emph{EvalLigsLit}&&&&&&&&\cellcolor{midgray}\\
+		\hline	
+		\emph{RepRes1}&&&&&\cellcolor{midgray}&\cellcolor{midgray}&&\\
+		\hline	
+		\emph{RepRes2}&&&&&&\cellcolor{midgray}&\cellcolor{midgray}&\\
+		\hline	
+		\emph{RepRes3}&&&&&&&\cellcolor{midgray}&\cellcolor{midgray}\\
+		\hline	
+		\end{tabular}
+\end{table}
+
+El programa es ambicioso pero su estructura permite el alcance de resultados
+intermedios independientes. El cumplimiento de 2/3 de los resultados planteados
+se puede considerar un desarrollo exitoso.
+
+\section{Productos a obtener del estudio}
+
+\subsection{Formación de recursos humanos}
+
+Se graduará durante el segundo año a un alumno de licenciatura.
+
+\subsection{Comunicación de resultados}
+
+\subsubsection{Comunicación en congresos}
+
+Se buscará participar a lo largo del segundo año en un congreso nacional con una
+contribución de tipo oral más una de tipo poster además de en un congreso internacional con
+una contribución de tipo oral más una de tipo poster.
+
+\subsubsection{Comunicación en artículos}
+
+Se publicarán a lo largo de los dos años, y como está programado en el
+cronograma, 4 artículos en revistas internacionales indexadas de alto impacto: 1
+artículo de revisión y 3 artículos de investigación original.
+
+\subsection{Utilidad del trabajo de investigación}
+
+El proyecto está dirigido a obtener la información relevante que nos permita
+\red{determinar las regiones más apropiadas de las proteínas constitutivas de
+  EBV susceptibles de ser ``drogadas'' con un posible efecto final inhibitorio.
+  Estos resultados son esenciales para sentar las bases} de un proyecto de
+diseño y optimización de moléculas con potencial farmacológico como antivirales
+de EBV.
+
+\section{Desglose de presupuesto}
+\emph{Ver Formatos Adjuntos.}
+
+
+\newpage
+
+\addcontentsline{toc}{section}{Referencias}
+\bibliographystyle{myunsrt_wtitle}
+\bibliography{/home/diego/MendeleyBibtex/Mis_Escritos-Mis_Propuestas-Fondos_Federales_2017}
+
+\end{document}
+
+%  LocalWords:  Barr
